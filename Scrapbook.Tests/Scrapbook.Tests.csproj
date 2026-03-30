@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="NUnit" Version="4.2.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.0-rc.1.25451.107" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Scrapbook\Scrapbook.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Requirements\" />
+  </ItemGroup>
+
+</Project>

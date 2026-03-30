@@ -1,0 +1,9 @@
+<Solution>
+	<Folder Name="/Solution Items/">
+		<File Path=".github/copilot-instructions.md" />
+		<File Path=".github/design.instructions.md" />
+		<File Path=".github/testing.instructions.md" />
+	</Folder>
+	<Project Path="Scrapbook.Tests/Scrapbook.Tests.csproj" />
+	<Project Path="Scrapbook/Scrapbook.csproj" />
+</Solution>
