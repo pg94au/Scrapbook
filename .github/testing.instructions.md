@@ -36,6 +36,10 @@ By covering a wide range of scenarios, including both valid and invalid cases, t
 ensure that the library is reliable and can handle a variety of situations that users may encounter when
 using it to generate output images based on their scripts and input images.
 
+When writing tests, organize them when possible on a per-command basis, so that all tests related to the
+"copy" command are grouped together, all tests related to the "rotate" command are grouped together,
+and so on.  This would include both the positive and negative test cases for each command.
+
 If you see a folder named Requirements in the Scrapbook.Tests project, do not write or touch tests in
 that folder without explicit instructions.
 That folder is intended for human review of the requirements and is not meant for automated testing.
