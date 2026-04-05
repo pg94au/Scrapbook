@@ -4,6 +4,14 @@
 		<File Path=".github/design.instructions.md" />
 		<File Path=".github/testing.instructions.md" />
 	</Folder>
+	<Folder Name="/Solution Items/Use Cases/">
+		<File Path=".github/Tests/CopyTests.md" />
+		<File Path=".github/Tests/FlipTests.md" />
+		<File Path=".github/Tests/InputTests.md" />
+		<File Path=".github/Tests/OutputTests.md" />
+		<File Path=".github/Tests/ReverseTests.md" />
+		<File Path=".github/Tests/RotateTests.md" />
+	</Folder>
 	<Project Path="Scrapbook.Tests/Scrapbook.Tests.csproj" />
 	<Project Path="Scrapbook/Scrapbook.csproj" />
 </Solution>

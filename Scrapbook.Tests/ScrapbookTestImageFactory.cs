@@ -23,6 +23,24 @@ internal static class ScrapbookTestImageFactory
         return bitmap;
     }
 
+    internal static Bitmap CreatePatternImage(int width, int height)
+    {
+        var bitmap = new Bitmap(width, height);
+
+        for (var y = 0; y < height; y++)
+        {
+            for (var x = 0; x < width; x++)
+            {
+                var red = (x * 37 + y * 17) % 256;
+                var green = (x * 67 + y * 29) % 256;
+                var blue = (x * 97 + y * 43) % 256;
+                bitmap.SetPixel(x, y, Color.FromArgb(red, green, blue));
+            }
+        }
+
+        return bitmap;
+    }
+
     internal static void AssertImagesEqual(Image expected, Image actual)
     {
         using var expectedBitmap = new Bitmap(expected);
@@ -36,6 +54,23 @@ internal static class ScrapbookTestImageFactory
             for (var x = 0; x < expectedBitmap.Width; x++)
             {
                 Assert.That(actualBitmap.GetPixel(x, y), Is.EqualTo(expectedBitmap.GetPixel(x, y)));
+            }
+        }
+    }
+
+    internal static void AssertRegionMatches(Image source, Rectangle region, Image actual)
+    {
+        using var sourceBitmap = new Bitmap(source);
+        using var actualBitmap = new Bitmap(actual);
+
+        Assert.That(actualBitmap.Width, Is.EqualTo(region.Width));
+        Assert.That(actualBitmap.Height, Is.EqualTo(region.Height));
+
+        for (var y = 0; y < region.Height; y++)
+        {
+            for (var x = 0; x < region.Width; x++)
+            {
+                Assert.That(actualBitmap.GetPixel(x, y), Is.EqualTo(sourceBitmap.GetPixel(region.X + x, region.Y + y)));
             }
         }
     }

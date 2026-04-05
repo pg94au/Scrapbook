@@ -72,12 +72,13 @@ internal sealed class ScriptExecutor
 
     private static Bitmap EvaluateCopy(CopyExpression expression, IReadOnlyDictionary<string, Bitmap> variables, int lineNumber)
     {
+        var source = ResolveVariable(variables, expression.SourceVariable, lineNumber);
+
         if (expression.RegionSize.Width <= 0 || expression.RegionSize.Height <= 0)
         {
             throw new InvalidOperationException($"Line {lineNumber}: copy size must be positive.");
         }
 
-        var source = ResolveVariable(variables, expression.SourceVariable, lineNumber);
         var rectangle = new Rectangle(expression.TopLeft, expression.RegionSize);
 
         if (rectangle.Left < 0 || rectangle.Top < 0 || rectangle.Right > source.Width || rectangle.Bottom > source.Height)

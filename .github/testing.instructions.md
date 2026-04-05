@@ -40,6 +40,15 @@ When writing tests, organize them when possible on a per-command basis, so that 
 "copy" command are grouped together, all tests related to the "rotate" command are grouped together,
 and so on.  This would include both the positive and negative test cases for each command.
 
+Look in the "Use Cases" solution folder for specific scenarios and examples that can be used as the basis
+for test cases.  These use cases provide real-world examples of how users might interact with the library
+and can help to ensure that the tests are relevant and cover important scenarios that users may encounter.
+Make sure that every use case described there is covered by at least one test case in the Scrapbook.Tests
+project, and that the tests accurately reflect the expected behavior of the library based on those use cases.
+Where sample scripts are provided in these use cases, utilize those scripts exactly as they are presented
+in order to ensure that the tests accurately reflect the intended behavior.  Do not modify any of the
+markdown files.
+
 If you see a folder named Requirements in the Scrapbook.Tests project, do not write or touch tests in
 that folder without explicit instructions.
 That folder is intended for human review of the requirements and is not meant for automated testing.

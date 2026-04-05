@@ -34,3 +34,4 @@ output f  # Output the final image stored in variable f
 - The "output" command in the script will specify which variable's image should be returned as a final output image from the library.
 - It can be utilized more than once in the script to specify multiple output images, and the library will return a list of output images corresponding to each "output" command in the order they appear in the script.
 - For example, if the script contains two "output" commands, the library will return a list containing two Image objects, each corresponding to the variable specified in the respective "output" command.
+- A `copy` command with zero width and height should be treated as an error, not as an empty-image result.
