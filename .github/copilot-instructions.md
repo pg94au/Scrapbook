@@ -1,7 +1,7 @@
 # Copilot Instructions
 
 ## General Guidelines
-- This purpose of this project is to create a library written in .NET 10 that provides capabilities for generating output images based on input images using a domain-specific language. 
+- The purpose of this project is to create a library written in .NET 10 that provides capabilities for generating output images based on input images using a domain-specific language. 
 - The library will provide an API for parsing the script, applying the transformations, and generating the output image(s). 
 - The library will also include error handling to provide feedback on any issues with the script or the input images.
 
@@ -12,6 +12,7 @@
 - Prefer meaningful named color variables/constants in image-based test assertions instead of raw RGB literals.
 - The tests will cover the various capabilities of the library, including parsing the scripts, applying transformations, and generating output images.
 - The tests will also cover error handling to ensure that the library provides appropriate feedback for any issues with the scripts or input images.
+- The tests should mirror the markdown use-case scripts exactly when scripts are provided, including argument order and scenario setup.
 - The tests will be designed to be comprehensive and cover a wide range of scenarios to ensure that the library is robust and reliable.
 
 ## Script Syntax

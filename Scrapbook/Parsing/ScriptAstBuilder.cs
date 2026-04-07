@@ -76,11 +76,8 @@ internal sealed class ScriptAstBuilder
 
     private static ScriptExpression BuildFlip(ParseTreeNode node, int lineNumber)
     {
-        var directionNode = node.ChildNodes[1];
-        var directionName = directionNode.Token?.ValueString
-            ?? directionNode.ChildNodes[0].Token.ValueString;
-
-        var source = node.ChildNodes[2].Token.ValueString;
+        var source = node.ChildNodes[1].Token.ValueString;
+        var directionName = node.ChildNodes[2].Token.ValueString;
 
         var direction = directionName switch
         {

@@ -111,3 +111,17 @@ output portion
 Assert that an error is thrown indicating that the script syntax is malformed, and that the library provides
 appropriate feedback for this error.  The library should not attempt to copy any portion of the image in this case,
 and the output should not contain any pixels.
+
+
+## 9. Copy from second input image when two input images are provided
+
+Create two fixed sample input images that are provided as the two input images.
+
+```
+source = input 1  # Reference the second input image (index 1).
+portion = copy source 10,20 25,25
+output portion
+```
+
+Assert that the output image contains the same pixel values as the corresponding region in the second input
+image (index 1) defined by the bounding box with top-left corner at (10,20) and width-height of (25,25).

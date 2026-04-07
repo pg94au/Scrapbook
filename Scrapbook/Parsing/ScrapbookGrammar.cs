@@ -11,10 +11,6 @@ internal sealed class ScrapbookGrammar : Grammar
         var number = new NumberLiteral("number", NumberOptions.AllowSign);
         var comma = ToTerm(",");
 
-        // Keyword tokens
-        var horizontal = ToTerm("horizontal");
-        var vertical = ToTerm("vertical");
-
         // Grammar nodes
         var program = new NonTerminal("program");
         var statement = new NonTerminal("statement");
@@ -28,18 +24,16 @@ internal sealed class ScrapbookGrammar : Grammar
         var reverse = new NonTerminal("reverse");
         var point = new NonTerminal("point");
         var size = new NonTerminal("size");
-        var flipDirection = new NonTerminal("flipDirection");
 
         // Argument structures
         point.Rule = number + comma + number;
         size.Rule = number + comma + number;
-        flipDirection.Rule = horizontal | vertical;
 
         // Command structures
         input.Rule = ToTerm("input") + number;
         copy.Rule = ToTerm("copy") + identifier + point + size;
         rotate.Rule = ToTerm("rotate") + identifier + number;
-        flip.Rule = ToTerm("flip") + flipDirection + identifier;
+        flip.Rule = ToTerm("flip") + identifier + identifier;
         reverse.Rule = ToTerm("reverse") + identifier;
 
         // Expression composition
