@@ -12,6 +12,8 @@ internal static class ScrapbookTestImageFactory
 
     internal static readonly Color InvertedOceanBlue = Color.FromArgb(245, 235, 225);
     internal static readonly Color InvertedMeadowGreen = Color.FromArgb(215, 205, 195);
+    internal static readonly Color InvertedSunsetOrange = Color.FromArgb(185, 175, 165);
+    internal static readonly Color InvertedPlumPurple = Color.FromArgb(155, 145, 135);
 
     internal static Bitmap CreateSampleImage()
     {
