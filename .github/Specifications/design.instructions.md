@@ -1,6 +1,7 @@
 Structure this project so that it looks familiar to an experienced software developer.  The project will
 be organized into multiple classes and namespaces to provide a clear separation of concerns and to make
-it easy for developers to navigate and understand the codebase.
+it easy for developers to navigate and understand the codebase.  Note you should be using the modern slnx
+Visual Studio solution file format, not the old sln format.  The name of the solution file is Scrapbook.slnx.
 
 When working with a problem that involves parsing a domain-specific language, use the Irony library to
 define the grammar of the language and to create a parser that can interpret the scripts written in that

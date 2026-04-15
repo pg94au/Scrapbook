@@ -1,10 +1,15 @@
 <Solution>
-	<Folder Name="/Solution Items/">
-		<File Path=".github/copilot-instructions.md" />
-		<File Path=".github/design.instructions.md" />
-		<File Path=".github/testing.instructions.md" />
+	<Folder Name="/Solution Items/" />
+	<Folder Name="/Solution Items/GitHub Workflows/">
+		<File Path=".github/workflows/ci.yml" />
 	</Folder>
-	<Folder Name="/Solution Items/Use Cases/">
+	<Folder Name="/Solution Items/Specifications/">
+		<File Path=".github/Specifications/ci.instructions.md" />
+		<File Path=".github/Specifications/copilot-instructions.md" />
+		<File Path=".github/Specifications/design.instructions.md" />
+		<File Path=".github/Specifications/testing.instructions.md" />
+	</Folder>
+	<Folder Name="/Solution Items/Specifications/Use Cases/">
 		<File Path=".github/Tests/CopyTests.md" />
 		<File Path=".github/Tests/FlipTests.md" />
 		<File Path=".github/Tests/InputTests.md" />
