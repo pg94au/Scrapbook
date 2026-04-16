@@ -1,33 +1,34 @@
-using System.Drawing;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using NUnit.Framework;
 
 namespace Scrapbook.Tests;
 
 internal static class ScrapbookTestImageFactory
 {
-    internal static readonly Color OceanBlue = Color.FromArgb(10, 20, 30);
-    internal static readonly Color MeadowGreen = Color.FromArgb(40, 50, 60);
-    internal static readonly Color SunsetOrange = Color.FromArgb(70, 80, 90);
-    internal static readonly Color PlumPurple = Color.FromArgb(100, 110, 120);
+    internal static readonly Rgba32 OceanBlue = new(10, 20, 30);
+    internal static readonly Rgba32 MeadowGreen = new(40, 50, 60);
+    internal static readonly Rgba32 SunsetOrange = new(70, 80, 90);
+    internal static readonly Rgba32 PlumPurple = new(100, 110, 120);
 
-    internal static readonly Color InvertedOceanBlue = Color.FromArgb(245, 235, 225);
-    internal static readonly Color InvertedMeadowGreen = Color.FromArgb(215, 205, 195);
-    internal static readonly Color InvertedSunsetOrange = Color.FromArgb(185, 175, 165);
-    internal static readonly Color InvertedPlumPurple = Color.FromArgb(155, 145, 135);
+    internal static readonly Rgba32 InvertedOceanBlue = new(245, 235, 225);
+    internal static readonly Rgba32 InvertedMeadowGreen = new(215, 205, 195);
+    internal static readonly Rgba32 InvertedSunsetOrange = new(185, 175, 165);
+    internal static readonly Rgba32 InvertedPlumPurple = new(155, 145, 135);
 
-    internal static Bitmap CreateSampleImage()
+    internal static Image<Rgba32> CreateSampleImage()
     {
-        var bitmap = new Bitmap(2, 2);
-        bitmap.SetPixel(0, 0, OceanBlue);
-        bitmap.SetPixel(1, 0, MeadowGreen);
-        bitmap.SetPixel(0, 1, SunsetOrange);
-        bitmap.SetPixel(1, 1, PlumPurple);
-        return bitmap;
+        var image = new Image<Rgba32>(2, 2);
+        image.SetPixel(0, 0, OceanBlue);
+        image.SetPixel(1, 0, MeadowGreen);
+        image.SetPixel(0, 1, SunsetOrange);
+        image.SetPixel(1, 1, PlumPurple);
+        return image;
     }
 
-    internal static Bitmap CreatePatternImage(int width, int height)
+    internal static Image<Rgba32> CreatePatternImage(int width, int height)
     {
-        var bitmap = new Bitmap(width, height);
+        var image = new Image<Rgba32>(width, height);
 
         for (var y = 0; y < height; y++)
         {
@@ -36,43 +37,43 @@ internal static class ScrapbookTestImageFactory
                 var red = (x * 37 + y * 17) % 256;
                 var green = (x * 67 + y * 29) % 256;
                 var blue = (x * 97 + y * 43) % 256;
-                bitmap.SetPixel(x, y, Color.FromArgb(red, green, blue));
+                image.SetPixel(x, y, new Rgba32((byte)red, (byte)green, (byte)blue));
             }
         }
 
-        return bitmap;
+        return image;
     }
 
-    internal static void AssertImagesEqual(Image expected, Image actual)
+    internal static Rgba32 GetPixel(this Image<Rgba32> image, int x, int y)
+        => image.Frames.RootFrame[x, y];
+
+    internal static void SetPixel(this Image<Rgba32> image, int x, int y, Rgba32 pixel)
+        => image.Frames.RootFrame[x, y] = pixel;
+
+    internal static void AssertImagesEqual(Image<Rgba32> expected, Image<Rgba32> actual)
     {
-        using var expectedBitmap = new Bitmap(expected);
-        using var actualBitmap = new Bitmap(actual);
+        Assert.That(actual.Width, Is.EqualTo(expected.Width));
+        Assert.That(actual.Height, Is.EqualTo(expected.Height));
 
-        Assert.That(actualBitmap.Width, Is.EqualTo(expectedBitmap.Width));
-        Assert.That(actualBitmap.Height, Is.EqualTo(expectedBitmap.Height));
-
-        for (var y = 0; y < expectedBitmap.Height; y++)
+        for (var y = 0; y < expected.Height; y++)
         {
-            for (var x = 0; x < expectedBitmap.Width; x++)
+            for (var x = 0; x < expected.Width; x++)
             {
-                Assert.That(actualBitmap.GetPixel(x, y), Is.EqualTo(expectedBitmap.GetPixel(x, y)));
+                Assert.That(actual.GetPixel(x, y), Is.EqualTo(expected.GetPixel(x, y)));
             }
         }
     }
 
-    internal static void AssertRegionMatches(Image source, Rectangle region, Image actual)
+    internal static void AssertRegionMatches(Image<Rgba32> source, Rectangle region, Image<Rgba32> actual)
     {
-        using var sourceBitmap = new Bitmap(source);
-        using var actualBitmap = new Bitmap(actual);
-
-        Assert.That(actualBitmap.Width, Is.EqualTo(region.Width));
-        Assert.That(actualBitmap.Height, Is.EqualTo(region.Height));
+        Assert.That(actual.Width, Is.EqualTo(region.Width));
+        Assert.That(actual.Height, Is.EqualTo(region.Height));
 
         for (var y = 0; y < region.Height; y++)
         {
             for (var x = 0; x < region.Width; x++)
             {
-                Assert.That(actualBitmap.GetPixel(x, y), Is.EqualTo(sourceBitmap.GetPixel(region.X + x, region.Y + y)));
+                Assert.That(actual.GetPixel(x, y), Is.EqualTo(source.GetPixel(region.X + x, region.Y + y)));
             }
         }
     }

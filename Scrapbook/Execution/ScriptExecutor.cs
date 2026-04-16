@@ -1,18 +1,19 @@
-using System.Drawing;
-using System.Drawing.Drawing2D;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using Scrapbook.Model;
 
 namespace Scrapbook.Execution;
 
 internal sealed class ScriptExecutor
 {
-    public IReadOnlyList<Image> Execute(IReadOnlyList<ScriptCommand> commands, IReadOnlyList<Image> inputImages)
+    public IReadOnlyList<Image<Rgba32>> Execute(IReadOnlyList<ScriptCommand> commands, IReadOnlyList<Image<Rgba32>> inputImages)
     {
         ArgumentNullException.ThrowIfNull(commands);
         ArgumentNullException.ThrowIfNull(inputImages);
 
-        var variables = new Dictionary<string, Bitmap>(StringComparer.Ordinal);
-        var outputs = new List<Image>();
+        var variables = new Dictionary<string, Image<Rgba32>>(StringComparer.Ordinal);
+        var outputs = new List<Image<Rgba32>>();
 
         try
         {
@@ -25,7 +26,7 @@ internal sealed class ScriptExecutor
                         AssignVariable(variables, assignment.VariableName, assigned);
                         break;
                     case OutputCommand output:
-                        outputs.Add(new Bitmap(ResolveVariable(variables, output.VariableName, output.LineNumber)));
+                        outputs.Add(ResolveVariable(variables, output.VariableName, output.LineNumber).Clone());
                         break;
                     default:
                         throw new InvalidOperationException($"Line {command.LineNumber}: unsupported command type.");
@@ -43,10 +44,10 @@ internal sealed class ScriptExecutor
         }
     }
 
-    private static Bitmap EvaluateExpression(
+    private static Image<Rgba32> EvaluateExpression(
         ScriptExpression expression,
-        IReadOnlyList<Image> inputImages,
-        IReadOnlyDictionary<string, Bitmap> variables,
+        IReadOnlyList<Image<Rgba32>> inputImages,
+        IReadOnlyDictionary<string, Image<Rgba32>> variables,
         int lineNumber)
     {
         return expression switch
@@ -60,17 +61,17 @@ internal sealed class ScriptExecutor
         };
     }
 
-    private static Bitmap EvaluateInput(InputExpression expression, IReadOnlyList<Image> inputImages, int lineNumber)
+    private static Image<Rgba32> EvaluateInput(InputExpression expression, IReadOnlyList<Image<Rgba32>> inputImages, int lineNumber)
     {
         if (expression.InputIndex < 0 || expression.InputIndex >= inputImages.Count)
         {
             throw new InvalidOperationException($"Line {lineNumber}: input index {expression.InputIndex} is out of range.");
         }
 
-        return new Bitmap(inputImages[expression.InputIndex]);
+        return inputImages[expression.InputIndex].Clone();
     }
 
-    private static Bitmap EvaluateCopy(CopyExpression expression, IReadOnlyDictionary<string, Bitmap> variables, int lineNumber)
+    private static Image<Rgba32> EvaluateCopy(CopyExpression expression, IReadOnlyDictionary<string, Image<Rgba32>> variables, int lineNumber)
     {
         var source = ResolveVariable(variables, expression.SourceVariable, lineNumber);
 
@@ -79,110 +80,95 @@ internal sealed class ScriptExecutor
             throw new InvalidOperationException($"Line {lineNumber}: copy size must be positive.");
         }
 
-        var rectangle = new Rectangle(expression.TopLeft, expression.RegionSize);
+        var rectangle = new Rectangle(expression.TopLeft.X, expression.TopLeft.Y, expression.RegionSize.Width, expression.RegionSize.Height);
 
         if (rectangle.Left < 0 || rectangle.Top < 0 || rectangle.Right > source.Width || rectangle.Bottom > source.Height)
         {
             throw new InvalidOperationException($"Line {lineNumber}: copy bounds exceed source image dimensions.");
         }
 
-        return source.Clone(rectangle, source.PixelFormat);
+        return source.Clone(ctx => ctx.Crop(rectangle));
     }
 
-    private static Bitmap EvaluateRotate(RotateExpression expression, IReadOnlyDictionary<string, Bitmap> variables, int lineNumber)
+    private static Image<Rgba32> EvaluateRotate(RotateExpression expression, IReadOnlyDictionary<string, Image<Rgba32>> variables, int lineNumber)
     {
         var source = ResolveVariable(variables, expression.SourceVariable, lineNumber);
         return RotateImage(source, expression.Angle);
     }
 
-    private static Bitmap EvaluateFlip(FlipExpression expression, IReadOnlyDictionary<string, Bitmap> variables, int lineNumber)
+    private static Image<Rgba32> EvaluateFlip(FlipExpression expression, IReadOnlyDictionary<string, Image<Rgba32>> variables, int lineNumber)
     {
         var source = ResolveVariable(variables, expression.SourceVariable, lineNumber);
-        var result = new Bitmap(source);
 
-        result.RotateFlip(expression.Direction switch
+        return source.Clone(ctx => ctx.Flip(expression.Direction switch
         {
-            FlipDirection.Horizontal => RotateFlipType.RotateNoneFlipX,
-            FlipDirection.Vertical => RotateFlipType.RotateNoneFlipY,
+            FlipDirection.Horizontal => FlipMode.Horizontal,
+            FlipDirection.Vertical => FlipMode.Vertical,
             _ => throw new InvalidOperationException($"Line {lineNumber}: invalid flip direction.")
+        }));
+    }
+
+    private static Image<Rgba32> EvaluateReverse(ReverseExpression expression, IReadOnlyDictionary<string, Image<Rgba32>> variables, int lineNumber)
+    {
+        var source = ResolveVariable(variables, expression.SourceVariable, lineNumber);
+        var result = source.Clone();
+
+        result.ProcessPixelRows(accessor =>
+        {
+            for (var y = 0; y < accessor.Height; y++)
+            {
+                var row = accessor.GetRowSpan(y);
+                for (var x = 0; x < row.Length; x++)
+                {
+                    ref var pixel = ref row[x];
+                    pixel = new Rgba32(
+                        (byte)(255 - pixel.R),
+                        (byte)(255 - pixel.G),
+                        (byte)(255 - pixel.B),
+                        pixel.A);
+                }
+            }
         });
 
         return result;
     }
 
-    private static Bitmap EvaluateReverse(ReverseExpression expression, IReadOnlyDictionary<string, Bitmap> variables, int lineNumber)
-    {
-        var source = ResolveVariable(variables, expression.SourceVariable, lineNumber);
-        var result = new Bitmap(source.Width, source.Height, source.PixelFormat);
-
-        for (var y = 0; y < source.Height; y++)
-        {
-            for (var x = 0; x < source.Width; x++)
-            {
-                var pixel = source.GetPixel(x, y);
-                result.SetPixel(x, y, Color.FromArgb(pixel.A, 255 - pixel.R, 255 - pixel.G, 255 - pixel.B));
-            }
-        }
-
-        return result;
-    }
-
-    private static Bitmap RotateImage(Bitmap source, float angle)
+    private static Image<Rgba32> RotateImage(Image<Rgba32> source, float angle)
     {
         var normalized = ((angle % 360f) + 360f) % 360f;
         if (Math.Abs(normalized % 90f) < 0.0001f)
         {
-            var rightAngle = new Bitmap(source);
             var quarterTurns = ((int)Math.Round(normalized / 90f, MidpointRounding.AwayFromZero) % 4 + 4) % 4;
-            rightAngle.RotateFlip(quarterTurns switch
+            var rotateMode = quarterTurns switch
             {
-                0 => RotateFlipType.RotateNoneFlipNone,
-                1 => RotateFlipType.Rotate90FlipNone,
-                2 => RotateFlipType.Rotate180FlipNone,
-                _ => RotateFlipType.Rotate270FlipNone
-            });
-
-            return rightAngle;
+                0 => RotateMode.None,
+                1 => RotateMode.Rotate90,
+                2 => RotateMode.Rotate180,
+                _ => RotateMode.Rotate270
+            };
+            return source.Clone(ctx => ctx.Rotate(rotateMode));
         }
 
-        var radians = Math.Abs(angle) * Math.PI / 180d;
-        var cos = Math.Abs(Math.Cos(radians));
-        var sin = Math.Abs(Math.Sin(radians));
-        var width = (int)Math.Ceiling((source.Width * cos) + (source.Height * sin));
-        var height = (int)Math.Ceiling((source.Width * sin) + (source.Height * cos));
-
-        var result = new Bitmap(width, height);
-        result.SetResolution(source.HorizontalResolution, source.VerticalResolution);
-
-        using var graphics = Graphics.FromImage(result);
-        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-        graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-        graphics.SmoothingMode = SmoothingMode.HighQuality;
-        graphics.TranslateTransform(width / 2f, height / 2f);
-        graphics.RotateTransform(angle);
-        graphics.TranslateTransform(-source.Width / 2f, -source.Height / 2f);
-        graphics.DrawImage(source, new PointF(0, 0));
-
-        return result;
+        return source.Clone(ctx => ctx.Rotate(angle));
     }
 
-    private static Bitmap ResolveVariable(IReadOnlyDictionary<string, Bitmap> variables, string variableName, int lineNumber)
+    private static Image<Rgba32> ResolveVariable(IReadOnlyDictionary<string, Image<Rgba32>> variables, string variableName, int lineNumber)
     {
-        if (!variables.TryGetValue(variableName, out var bitmap))
+        if (!variables.TryGetValue(variableName, out var image))
         {
             throw new InvalidOperationException($"Line {lineNumber}: variable '{variableName}' was not defined.");
         }
 
-        return bitmap;
+        return image;
     }
 
-    private static void AssignVariable(IDictionary<string, Bitmap> variables, string variableName, Bitmap bitmap)
+    private static void AssignVariable(IDictionary<string, Image<Rgba32>> variables, string variableName, Image<Rgba32> image)
     {
         if (variables.TryGetValue(variableName, out var existing))
         {
             existing.Dispose();
         }
 
-        variables[variableName] = bitmap;
+        variables[variableName] = image;
     }
 }

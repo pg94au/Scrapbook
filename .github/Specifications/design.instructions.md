@@ -14,6 +14,11 @@ to a command.
 
 The library will be built in a project named Scrapbook.
 
+This library should be functional when used on either Windows or Linux.  Support for image processing on
+both platforms can be achieved using the SixLabors.ImageSharp library, which provides cross-platform image
+processing capabilities.  By utilizing this library, the Scrapbook library can perform image transformations
+and manipulations on both Windows and Linux without relying on platform-specific APIs or libraries.
+
 The commands that are to be included in this DSL include:
 
 Copy:

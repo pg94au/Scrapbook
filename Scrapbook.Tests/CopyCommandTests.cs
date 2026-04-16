@@ -1,4 +1,5 @@
-using System.Drawing;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using NUnit.Framework;
 
 namespace Scrapbook.Tests;
@@ -19,7 +20,7 @@ public class CopyCommandTests
             """, new[] { input });
 
         Assert.That(outputs, Has.Count.EqualTo(1));
-        using var actual = (Bitmap)outputs[0];
+        using var actual = outputs[0];
         Assert.That(actual.Width, Is.EqualTo(1));
         Assert.That(actual.Height, Is.EqualTo(1));
         Assert.That(actual.GetPixel(0, 0), Is.EqualTo(ScrapbookTestImageFactory.PlumPurple));
@@ -39,7 +40,7 @@ public class CopyCommandTests
             """, new[] { input });
 
         Assert.That(outputs, Has.Count.EqualTo(1));
-        using var actual = (Bitmap)outputs[0];
+        using var actual = outputs[0];
         ScrapbookTestImageFactory.AssertRegionMatches(input, expectedRegion, actual);
     }
 
@@ -146,10 +147,10 @@ public class CopyCommandTests
             source = input 1
             portion = copy source 10,20 25,25
             output portion
-            """, new Image[] { firstInput, secondInput });
+            """, new[] { firstInput, secondInput });
 
         Assert.That(outputs, Has.Count.EqualTo(1));
-        using var actual = (Bitmap)outputs[0];
+        using var actual = outputs[0];
         ScrapbookTestImageFactory.AssertRegionMatches(secondInput, expectedRegion, actual);
     }
 }

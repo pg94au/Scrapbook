@@ -1,3 +1,5 @@
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using NUnit.Framework;
 
 namespace Scrapbook.Tests;

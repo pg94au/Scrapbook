@@ -1,4 +1,5 @@
-using System.Drawing;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using NUnit.Framework;
 
 namespace Scrapbook.Tests;
@@ -18,7 +19,7 @@ public class OutputCommandTests
             """, new[] { input });
 
         Assert.That(outputs, Has.Count.EqualTo(1));
-        using var actual = (Bitmap)outputs[0];
+        using var actual = outputs[0];
         ScrapbookTestImageFactory.AssertImagesEqual(input, actual);
     }
 
@@ -36,12 +37,12 @@ public class OutputCommandTests
             second = input 1
             output first
             output second
-            """, new Image[] { firstInput, secondInput });
+            """, new[] { firstInput, secondInput });
 
         Assert.That(outputs, Has.Count.EqualTo(2));
 
-        using var firstActual = (Bitmap)outputs[0];
-        using var secondActual = (Bitmap)outputs[1];
+        using var firstActual = outputs[0];
+        using var secondActual = outputs[1];
 
         ScrapbookTestImageFactory.AssertImagesEqual(firstInput, firstActual);
         ScrapbookTestImageFactory.AssertImagesEqual(secondInput, secondActual);
@@ -61,8 +62,8 @@ public class OutputCommandTests
 
         Assert.That(outputs, Has.Count.EqualTo(2));
 
-        using var firstActual = (Bitmap)outputs[0];
-        using var secondActual = (Bitmap)outputs[1];
+        using var firstActual = outputs[0];
+        using var secondActual = outputs[1];
 
         ScrapbookTestImageFactory.AssertImagesEqual(input, firstActual);
         ScrapbookTestImageFactory.AssertImagesEqual(input, secondActual);
@@ -94,7 +95,7 @@ public class OutputCommandTests
             """, new[] { input });
 
         Assert.That(outputs, Has.Count.EqualTo(1));
-        using var actual = (Bitmap)outputs[0];
+        using var actual = outputs[0];
 
         Assert.That(actual.GetPixel(0, 0), Is.EqualTo(ScrapbookTestImageFactory.SunsetOrange));
         Assert.That(actual.GetPixel(0, 0), Is.Not.EqualTo(ScrapbookTestImageFactory.OceanBlue));

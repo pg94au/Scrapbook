@@ -1,4 +1,5 @@
-using System.Drawing;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using Irony.Parsing;
 using Scrapbook.Execution;
 using Scrapbook.Parsing;
@@ -13,7 +14,7 @@ public sealed class ScrapbookParser
     /// <param name="script">The script to parse and execute.</param>
     /// <param name="inputImages">Input images available to the script through zero-based indexes.</param>
     /// <returns>Output images in the same order as encountered <c>output</c> statements.</returns>
-    public IReadOnlyList<Image> Parse(string script, IReadOnlyList<Image> inputImages)
+    public IReadOnlyList<Image<Rgba32>> Parse(string script, IReadOnlyList<Image<Rgba32>> inputImages)
     {
         if (string.IsNullOrWhiteSpace(script))
         {

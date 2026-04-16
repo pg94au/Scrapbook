@@ -1,4 +1,5 @@
-using System.Drawing;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using NUnit.Framework;
 
 namespace Scrapbook.Tests;
@@ -19,7 +20,7 @@ public class FlipCommandTests
             """, new[] { input });
 
         Assert.That(outputs, Has.Count.EqualTo(1));
-        using var actual = (Bitmap)outputs[0];
+        using var actual = outputs[0];
 
         Assert.That(actual.GetPixel(0, 0), Is.EqualTo(ScrapbookTestImageFactory.MeadowGreen));
         Assert.That(actual.GetPixel(1, 0), Is.EqualTo(ScrapbookTestImageFactory.OceanBlue));
@@ -40,7 +41,7 @@ public class FlipCommandTests
             """, new[] { input });
 
         Assert.That(outputs, Has.Count.EqualTo(1));
-        using var actual = (Bitmap)outputs[0];
+        using var actual = outputs[0];
 
         Assert.That(actual.GetPixel(0, 0), Is.EqualTo(ScrapbookTestImageFactory.SunsetOrange));
         Assert.That(actual.GetPixel(1, 0), Is.EqualTo(ScrapbookTestImageFactory.PlumPurple));
