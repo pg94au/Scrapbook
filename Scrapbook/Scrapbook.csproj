@@ -4,6 +4,18 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <!-- NuGet package metadata -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Scrapbook</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Paul Grebenc</Authors>
+    <Description>A DSL-based image processing library. Write simple scripts to compose, crop, flip, rotate, and reverse images.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright © 2025 Paul Grebenc</Copyright>
+    <PackageTags>image;dsl;scripting;imagesharp;processing</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/pg94au/Scrapbook</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
