@@ -14,9 +14,14 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright © 2025 Paul Grebenc</Copyright>
     <PackageTags>image;dsl;scripting;imagesharp;processing</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/pg94au/Scrapbook</RepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Irony" Version="1.5.3" />
