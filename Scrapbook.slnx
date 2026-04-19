@@ -10,12 +10,13 @@
 		<File Path=".github/Specifications/testing.instructions.md" />
 	</Folder>
 	<Folder Name="/Solution Items/Specifications/Use Cases/">
-		<File Path=".github/Tests/CopyTests.md" />
-		<File Path=".github/Tests/FlipTests.md" />
-		<File Path=".github/Tests/InputTests.md" />
-		<File Path=".github/Tests/OutputTests.md" />
-		<File Path=".github/Tests/ReverseTests.md" />
-		<File Path=".github/Tests/RotateTests.md" />
+		<File Path=".github/Specifications/Tests/CopyTests.md" />
+		<File Path=".github/Specifications/Tests/CreateTests.md" />
+		<File Path=".github/Specifications/Tests/FlipTests.md" />
+		<File Path=".github/Specifications/Tests/InputTests.md" />
+		<File Path=".github/Specifications/Tests/OutputTests.md" />
+		<File Path=".github/Specifications/Tests/ReverseTests.md" />
+		<File Path=".github/Specifications/Tests/RotateTests.md" />
 	</Folder>
 	<Project Path="Scrapbook.Tests/Scrapbook.Tests.csproj" />
 	<Project Path="Scrapbook/Scrapbook.csproj" />

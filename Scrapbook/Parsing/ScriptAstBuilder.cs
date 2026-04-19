@@ -62,6 +62,7 @@ internal sealed class ScriptAstBuilder
                 ToFloat(node.ChildNodes[2], lineNumber, "angle")),
             "flip" => BuildFlip(node, lineNumber),
             "reverse" => new ReverseExpression(node.ChildNodes[1].Token.ValueString),
+            "create" => BuildCreate(node, lineNumber),
             _ => throw new InvalidOperationException($"Line {lineNumber}: unsupported expression '{node.Term.Name}'.")
         };
     }
@@ -72,6 +73,15 @@ internal sealed class ScriptAstBuilder
         var topLeft = ReadPoint(node.ChildNodes[2], lineNumber, "top-left point");
         var regionSize = ReadSize(node.ChildNodes[3], lineNumber, "region size");
         return new CopyExpression(source, topLeft, regionSize);
+    }
+
+    private static ScriptExpression BuildCreate(ParseTreeNode node, int lineNumber)
+    {
+        var sizeNode = node.ChildNodes[1];
+        var width = ToInt(sizeNode.ChildNodes[0], lineNumber, "width");
+        var height = ToInt(sizeNode.ChildNodes[1], lineNumber, "height");
+        var color = node.ChildNodes.Count > 2 ? node.ChildNodes[2].ChildNodes[0].Token.ValueString : null;
+        return new CreateExpression(width, height, color);
     }
 
     private static ScriptExpression BuildFlip(ParseTreeNode node, int lineNumber)
@@ -107,7 +117,19 @@ internal sealed class ScriptAstBuilder
     {
         try
         {
-            return Convert.ToInt32(node.Token.Value, System.Globalization.CultureInfo.InvariantCulture);
+            var value = node.Token.Value;
+            if (value is double d)
+            {
+                if (d != Math.Truncate(d))
+                {
+                    throw new InvalidOperationException($"Line {lineNumber}: invalid integer for {valueName}.");
+                }
+            }
+            return Convert.ToInt32(value, System.Globalization.CultureInfo.InvariantCulture);
+        }
+        catch (InvalidOperationException)
+        {
+            throw;
         }
         catch (Exception ex) when (ex is OverflowException or FormatException)
         {

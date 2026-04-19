@@ -57,6 +57,7 @@ internal sealed class ScriptExecutor
             RotateExpression rotate => EvaluateRotate(rotate, variables, lineNumber),
             FlipExpression flip => EvaluateFlip(flip, variables, lineNumber),
             ReverseExpression reverse => EvaluateReverse(reverse, variables, lineNumber),
+            CreateExpression create => EvaluateCreate(create, lineNumber),
             _ => throw new InvalidOperationException($"Line {lineNumber}: unsupported expression type.")
         };
     }
@@ -150,6 +151,28 @@ internal sealed class ScriptExecutor
         }
 
         return source.Clone(ctx => ctx.Rotate(angle));
+    }
+
+    private static Image<Rgba32> EvaluateCreate(CreateExpression expression, int lineNumber)
+    {
+        if (expression.Width <= 0 || expression.Height <= 0)
+        {
+            throw new InvalidOperationException($"Line {lineNumber}: image dimensions must be positive.");
+        }
+
+        var backgroundColor = Color.Transparent;
+
+        if (expression.Color is not null)
+        {
+            if (!Color.TryParse(expression.Color, out backgroundColor))
+            {
+                throw new InvalidOperationException($"Line {lineNumber}: invalid color '{expression.Color}'.");
+            }
+        }
+
+        var fillColor = backgroundColor.ToPixel<Rgba32>();
+        var image = new Image<Rgba32>(expression.Width, expression.Height, fillColor);
+        return image;
     }
 
     private static Image<Rgba32> ResolveVariable(IReadOnlyDictionary<string, Image<Rgba32>> variables, string variableName, int lineNumber)

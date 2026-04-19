@@ -27,3 +27,5 @@ internal enum FlipDirection
 internal sealed record FlipExpression(string SourceVariable, FlipDirection Direction) : ScriptExpression;
 
 internal sealed record ReverseExpression(string SourceVariable) : ScriptExpression;
+
+internal sealed record CreateExpression(int Width, int Height, string? Color) : ScriptExpression;

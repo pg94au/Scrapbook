@@ -30,6 +30,16 @@ Copy:
 - The returned image can be assigned to a new variable.
 - Example:  address = copy form 10,20 25,25
 
+Create:
+- This command will create a new blank image with specified dimensions and assign it to a new variable.
+- The color of the blank image can be specified as an optional argument, and if not provided, it will default to transparent.
+- Colors can be specified using named colors (e.g., "white", "red", "blue") or using hexadecimal color codes
+- (e.g., "#FFFFFF" for white, "#FF0000" for red).
+- Color names come from the list supported by the SixLabors.ImageSharp library.
+- Example: blankImage = create 200,300
+- Example: blankImage = create 200,300 white
+- Example: blankImage = create 200,300 #FF0000  (for red)
+
 Rotate:
 - This command will rotate an image by a specified angle and assign the result to a new variable.
 - Angles are expressed in degrees and can be positive (for clockwise rotation) or negative (for counterclockwise rotation).
