@@ -2,7 +2,7 @@
 
 [![NuGet](https://img.shields.io/nuget/v/Scrapbook.svg)](https://www.nuget.org/packages/Scrapbook/)
 
-A DSL-based image processing library for .NET. Write simple scripts to compose, crop, flip, rotate, and reverse images using a readable scripting language.
+A DSL-based image processing library for .NET. Write simple scripts to create, compose, crop, flip, rotate, and reverse images using a readable scripting language.
 
 
 ## Installation
@@ -34,6 +34,7 @@ await outputs[0].SaveAsync("result.png");
 
 | Command | Syntax | Description |
 |---|---|---|
+| `create` | `var = create <w,h> [color]` | Creates a new image with optional background color |
 | `input` | `var = input <index>` | Loads an input image by index |
 | `output` | `output <var>` | Adds an image to the output list |
 | `copy` | `var = copy <source> <x,y> <w,h>` | Copies a rectangular region from an image |
