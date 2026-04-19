@@ -6,11 +6,11 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
-  publish:
+  build-and-publish:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write   # required for NuGet trusted publishing (OIDC)
-
+      id-token: write  # enable GitHub OIDC token issuance for this job
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -36,13 +36,14 @@ jobs:
 
       - name: Pack
         run: dotnet pack Scrapbook/Scrapbook.csproj --configuration Release --no-build -p:Version=${{ steps.version.outputs.VERSION }} --output ./nupkg
-
-      - name: Publish to NuGet.org
-        shell: pwsh
-        run: |
-          $response = Invoke-RestMethod `
-            -Uri "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=nuget.org" `
-            -Headers @{ Authorization = "Bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" }
-          dotnet nuget push ./nupkg/*.nupkg `
-            --source https://api.nuget.org/v3/index.json `
-            --api-key $response.value
+    
+      # Get a short-lived NuGet API key
+      - name: NuGet login (OIDC → temp API key)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+    
+      # Push the package
+      - name: NuGet push
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
