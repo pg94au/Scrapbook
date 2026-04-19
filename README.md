@@ -1,6 +1,9 @@
 # Scrapbook
 
+[![NuGet](https://img.shields.io/nuget/v/Scrapbook.svg)](https://www.nuget.org/packages/Scrapbook/)
+
 A DSL-based image processing library for .NET. Write simple scripts to compose, crop, flip, rotate, and reverse images using a readable scripting language.
+
 
 ## Installation
 
