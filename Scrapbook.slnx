@@ -2,6 +2,7 @@
 	<Folder Name="/Solution Items/" />
 	<Folder Name="/Solution Items/GitHub Workflows/">
 		<File Path=".github/workflows/ci.yml" />
+		<File Path=".github/workflows/publish.yml" />
 	</Folder>
 	<Folder Name="/Solution Items/Specifications/">
 		<File Path=".github/Specifications/ci.instructions.md" />
@@ -15,6 +16,8 @@
 		<File Path=".github/Specifications/Tests/FlipTests.md" />
 		<File Path=".github/Specifications/Tests/InputTests.md" />
 		<File Path=".github/Specifications/Tests/OutputTests.md" />
+		<File Path=".github/Specifications/Tests/PasteTests.md" />
+		<File Path=".github/Specifications/Tests/ResizeTests.md" />
 		<File Path=".github/Specifications/Tests/ReverseTests.md" />
 		<File Path=".github/Specifications/Tests/RotateTests.md" />
 	</Folder>

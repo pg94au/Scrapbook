@@ -63,6 +63,7 @@ internal sealed class ScriptAstBuilder
             "flip" => BuildFlip(node, lineNumber),
             "reverse" => new ReverseExpression(node.ChildNodes[1].Token.ValueString),
             "create" => BuildCreate(node, lineNumber),
+            "paste" => BuildPaste(node, lineNumber),
             _ => throw new InvalidOperationException($"Line {lineNumber}: unsupported expression '{node.Term.Name}'.")
         };
     }
@@ -82,6 +83,14 @@ internal sealed class ScriptAstBuilder
         var height = ToInt(sizeNode.ChildNodes[1], lineNumber, "height");
         var color = node.ChildNodes.Count > 2 ? node.ChildNodes[2].ChildNodes[0].Token.ValueString : null;
         return new CreateExpression(width, height, color);
+    }
+
+    private static ScriptExpression BuildPaste(ParseTreeNode node, int lineNumber)
+    {
+        var source = node.ChildNodes[1].Token.ValueString;
+        var target = node.ChildNodes[2].Token.ValueString;
+        var position = ReadPoint(node.ChildNodes[3], lineNumber, "position");
+        return new PasteExpression(source, target, position);
     }
 
     private static ScriptExpression BuildFlip(ParseTreeNode node, int lineNumber)

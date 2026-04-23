@@ -29,3 +29,5 @@ internal sealed record FlipExpression(string SourceVariable, FlipDirection Direc
 internal sealed record ReverseExpression(string SourceVariable) : ScriptExpression;
 
 internal sealed record CreateExpression(int Width, int Height, string? Color) : ScriptExpression;
+
+internal sealed record PasteExpression(string SourceVariable, string TargetVariable, Point Position) : ScriptExpression;

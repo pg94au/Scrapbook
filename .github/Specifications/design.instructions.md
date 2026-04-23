@@ -50,6 +50,11 @@ Flip:
 - Example: flippedImage = flip originalImage horizontal
 - Example: flippedImage = flip originalImage vertical
 
+Paste:
+- This command will paste one image onto another image at a specified position and assign the result to a new variable.
+- The position is specified by the top-left corner of the source image relative to the target image.
+- Example: pastedImage = paste sourceImage targetImage 10,10  # Will paste "sourceImage" onto "targetImage" with the top-left corner of "sourceImage" positioned at (10,10) on "targetImage".
+
 Reverse:
 - This command will reverse the colors of an image and assign the result to a new variable.
 - Reversing the colors of an image means that each pixel's color is replaced with its complementary color.

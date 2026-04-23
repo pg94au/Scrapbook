@@ -58,6 +58,7 @@ internal sealed class ScriptExecutor
             FlipExpression flip => EvaluateFlip(flip, variables, lineNumber),
             ReverseExpression reverse => EvaluateReverse(reverse, variables, lineNumber),
             CreateExpression create => EvaluateCreate(create, lineNumber),
+            PasteExpression paste => EvaluatePaste(paste, variables, lineNumber),
             _ => throw new InvalidOperationException($"Line {lineNumber}: unsupported expression type.")
         };
     }
@@ -151,6 +152,45 @@ internal sealed class ScriptExecutor
         }
 
         return source.Clone(ctx => ctx.Rotate(angle));
+    }
+
+    private static Image<Rgba32> EvaluatePaste(PasteExpression expression, IReadOnlyDictionary<string, Image<Rgba32>> variables, int lineNumber)
+    {
+        var source = ResolveVariable(variables, expression.SourceVariable, lineNumber);
+        var target = ResolveVariable(variables, expression.TargetVariable, lineNumber);
+
+        var result = target.Clone();
+
+        var offsetX = expression.Position.X;
+        var offsetY = expression.Position.Y;
+
+        // Determine the source region to copy, accounting for negative offsets (clipping)
+        var srcStartX = Math.Max(0, -offsetX);
+        var srcStartY = Math.Max(0, -offsetY);
+
+        // Determine the destination region within the target bounds
+        var dstStartX = Math.Max(0, offsetX);
+        var dstStartY = Math.Max(0, offsetY);
+
+        var copyWidth = Math.Min(source.Width - srcStartX, result.Width - dstStartX);
+        var copyHeight = Math.Min(source.Height - srcStartY, result.Height - dstStartY);
+
+        if (copyWidth <= 0 || copyHeight <= 0)
+        {
+            return result;
+        }
+
+        result.ProcessPixelRows(source, (resultAccessor, sourceAccessor) =>
+        {
+            for (var row = 0; row < copyHeight; row++)
+            {
+                var srcRow = sourceAccessor.GetRowSpan(srcStartY + row);
+                var dstRow = resultAccessor.GetRowSpan(dstStartY + row);
+                srcRow.Slice(srcStartX, copyWidth).CopyTo(dstRow.Slice(dstStartX, copyWidth));
+            }
+        });
+
+        return result;
     }
 
     private static Image<Rgba32> EvaluateCreate(CreateExpression expression, int lineNumber)
