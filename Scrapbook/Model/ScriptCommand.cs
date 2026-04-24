@@ -31,3 +31,5 @@ internal sealed record ReverseExpression(string SourceVariable) : ScriptExpressi
 internal sealed record CreateExpression(int Width, int Height, string? Color) : ScriptExpression;
 
 internal sealed record PasteExpression(string SourceVariable, string TargetVariable, Point Position) : ScriptExpression;
+
+internal sealed record ResizeExpression(string SourceVariable, int Width, int Height) : ScriptExpression;

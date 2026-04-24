@@ -59,6 +59,7 @@ internal sealed class ScriptExecutor
             ReverseExpression reverse => EvaluateReverse(reverse, variables, lineNumber),
             CreateExpression create => EvaluateCreate(create, lineNumber),
             PasteExpression paste => EvaluatePaste(paste, variables, lineNumber),
+            ResizeExpression resize => EvaluateResize(resize, variables, lineNumber),
             _ => throw new InvalidOperationException($"Line {lineNumber}: unsupported expression type.")
         };
     }
@@ -213,6 +214,17 @@ internal sealed class ScriptExecutor
         var fillColor = backgroundColor.ToPixel<Rgba32>();
         var image = new Image<Rgba32>(expression.Width, expression.Height, fillColor);
         return image;
+    }
+
+    private static Image<Rgba32> EvaluateResize(ResizeExpression expression, IReadOnlyDictionary<string, Image<Rgba32>> variables, int lineNumber)
+    {
+        if (expression.Width <= 0 || expression.Height <= 0)
+        {
+            throw new InvalidOperationException($"Line {lineNumber}: resize dimensions must be positive.");
+        }
+
+        var source = ResolveVariable(variables, expression.SourceVariable, lineNumber);
+        return source.Clone(ctx => ctx.Resize(expression.Width, expression.Height));
     }
 
     private static Image<Rgba32> ResolveVariable(IReadOnlyDictionary<string, Image<Rgba32>> variables, string variableName, int lineNumber)

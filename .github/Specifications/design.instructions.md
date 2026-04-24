@@ -55,6 +55,10 @@ Paste:
 - The position is specified by the top-left corner of the source image relative to the target image.
 - Example: pastedImage = paste sourceImage targetImage 10,10  # Will paste "sourceImage" onto "targetImage" with the top-left corner of "sourceImage" positioned at (10,10) on "targetImage".
 
+Resize:
+- This command will stretch or shrink the specified image to the new dimensions and assign the result to a new variable.
+- Example: resized = resize sourceImage 100,100 # Will resize "sourceImage" to be of dimensions 100x100 and assign the result to a new variable.
+
 Reverse:
 - This command will reverse the colors of an image and assign the result to a new variable.
 - Reversing the colors of an image means that each pixel's color is replaced with its complementary color.
