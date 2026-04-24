@@ -18,22 +18,29 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Scrapbook;
 
+// Load input images
 using var source1 = await Image.LoadAsync<Rgba32>("photo1.png");
 using var source1 = await Image.LoadAsync<Rgba32>("photo2.png");
 
 var parser = new ScrapbookParser();
+
+// Call the parser to execute a script, providing the input images that can be referenced in the script
 var outputs = parser.Parse("""
+    # Assign input images to variables
     source1 = input 0
     source2 = input 1
- 
+
+    # Flip the first image horizontally and add it to the output 
     flipped = flip source1 horizontal
     output flipped
     
+    # Copy a portion of the second image, rotate it, and add it to the output
     portion = copy source2 50,50 100,100
     rotatedPortion = rotate portion 90
     output rotatedPortion
     """, new[] { source1, source2 });
 
+// Save the output images
 await outputs[0].SaveAsync("result1.png");
 await outputs[1].SaveAsync("result2.png");
 ```
