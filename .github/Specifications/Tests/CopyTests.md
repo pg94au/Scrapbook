@@ -38,7 +38,7 @@ output portion
 
 Assert that an error is thrown indicating that the copy bounds are invalid, and that the library provides
 appropriate feedback for this error.  The library should not attempt to copy any portion of the image in this case,
-and the output should not contain any pixels.
+and no images should be output.
 
 
 4. Copy from an image variable that has not been assigned a value
@@ -50,7 +50,7 @@ output portion
 
 Assert that an error is thrown indicating that the input index is invalid, and that the library provides
 appropriate feedback for this error.  The library should not attempt to copy any portion of the image in this case,
-and the output should not contain any pixels.
+and no images should be output.
 
 
 ## 5. Copy without providing the required arguments
@@ -65,7 +65,7 @@ output portion
 
 Assert that an error is thrown indicating that the script syntax is malformed, and that the library provides
 appropriate feedback for this error.  The library should not attempt to copy any portion of the image in this case,
-and the output should not contain any pixels.
+and no images should be output.
 
 
 ## 6. Copy with top corner coordinates that are outside the bounds of the input image
@@ -80,7 +80,7 @@ output portion
 
 Assert that an error is thrown indicating that the copy bounds are invalid, and that the library provides
 appropriate feedback for this error.  The library should not attempt to copy any portion of the image in this case,
-and the output should not contain any pixels.
+and no images should be output.
 
 
 ## 7. Copy with unparsable arguments
@@ -95,7 +95,7 @@ output portion
 
 Assert that an error is thrown indicating that the script syntax is malformed, and that the library provides
 appropriate feedback for this error.  The library should not attempt to copy any portion of the image in this case,
-and the output should not contain any pixels.
+and no images should be output.
 
 
 ## 8. Copy with zero width and height
@@ -110,7 +110,7 @@ output portion
 
 Assert that an error is thrown indicating that the script syntax is malformed, and that the library provides
 appropriate feedback for this error.  The library should not attempt to copy any portion of the image in this case,
-and the output should not contain any pixels.
+and no images should be output.
 
 
 ## 9. Copy from second input image when two input images are provided

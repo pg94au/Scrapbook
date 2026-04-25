@@ -65,6 +65,7 @@ internal sealed class ScriptAstBuilder
             "create" => BuildCreate(node, lineNumber),
             "paste" => BuildPaste(node, lineNumber),
             "resize" => BuildResize(node, lineNumber),
+            "fill" => BuildFill(node, lineNumber),
             _ => throw new InvalidOperationException($"Line {lineNumber}: unsupported expression '{node.Term.Name}'.")
         };
     }
@@ -101,6 +102,15 @@ internal sealed class ScriptAstBuilder
         var width = ToInt(sizeNode.ChildNodes[0], lineNumber, "width");
         var height = ToInt(sizeNode.ChildNodes[1], lineNumber, "height");
         return new ResizeExpression(source, width, height);
+    }
+
+    private static ScriptExpression BuildFill(ParseTreeNode node, int lineNumber)
+    {
+        var source = node.ChildNodes[1].Token.ValueString;
+        var topLeft = ReadPoint(node.ChildNodes[2], lineNumber, "top-left point");
+        var regionSize = ReadSize(node.ChildNodes[3], lineNumber, "fill size");
+        var color = node.ChildNodes[4].ChildNodes[0].Token.ValueString;
+        return new FillExpression(source, topLeft, regionSize, color);
     }
 
     private static ScriptExpression BuildFlip(ParseTreeNode node, int lineNumber)

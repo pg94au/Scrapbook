@@ -29,6 +29,7 @@ internal sealed class ScrapbookGrammar : Grammar
         var createColor = new NonTerminal("createColor");
         var paste = new NonTerminal("paste");
         var resize = new NonTerminal("resize");
+        var fill = new NonTerminal("fill");
         var point = new NonTerminal("point");
         var size = new NonTerminal("size");
 
@@ -49,9 +50,10 @@ internal sealed class ScrapbookGrammar : Grammar
                     | ToTerm("create") + size + createColor;
         paste.Rule = ToTerm("paste") + identifier + identifier + point;
         resize.Rule = ToTerm("resize") + identifier + size;
+        fill.Rule = ToTerm("fill") + identifier + point + size + createColor;
 
         // Expression composition
-        expression.Rule = input | copy | rotate | flip | reverse | create | paste | resize;
+        expression.Rule = input | copy | rotate | flip | reverse | create | paste | resize | fill;
 
         // Statement structures
         assignment.Rule = identifier + ToTerm("=") + expression;

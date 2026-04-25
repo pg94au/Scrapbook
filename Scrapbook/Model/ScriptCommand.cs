@@ -33,3 +33,5 @@ internal sealed record CreateExpression(int Width, int Height, string? Color) : 
 internal sealed record PasteExpression(string SourceVariable, string TargetVariable, Point Position) : ScriptExpression;
 
 internal sealed record ResizeExpression(string SourceVariable, int Width, int Height) : ScriptExpression;
+
+internal sealed record FillExpression(string SourceVariable, Point TopLeft, Size RegionSize, string Color) : ScriptExpression;

@@ -60,6 +60,7 @@ internal sealed class ScriptExecutor
             CreateExpression create => EvaluateCreate(create, lineNumber),
             PasteExpression paste => EvaluatePaste(paste, variables, lineNumber),
             ResizeExpression resize => EvaluateResize(resize, variables, lineNumber),
+            FillExpression fill => EvaluateFill(fill, variables, lineNumber),
             _ => throw new InvalidOperationException($"Line {lineNumber}: unsupported expression type.")
         };
     }
@@ -225,6 +226,50 @@ internal sealed class ScriptExecutor
 
         var source = ResolveVariable(variables, expression.SourceVariable, lineNumber);
         return source.Clone(ctx => ctx.Resize(expression.Width, expression.Height));
+    }
+
+    private static Image<Rgba32> EvaluateFill(FillExpression expression, IReadOnlyDictionary<string, Image<Rgba32>> variables, int lineNumber)
+    {
+        if (expression.TopLeft.X < 0 || expression.TopLeft.Y < 0)
+        {
+            throw new InvalidOperationException($"Line {lineNumber}: fill position coordinates must be non-negative.");
+        }
+
+        if (expression.RegionSize.Width <= 0 || expression.RegionSize.Height <= 0)
+        {
+            throw new InvalidOperationException($"Line {lineNumber}: fill dimensions must be positive.");
+        }
+
+        if (!Color.TryParse(expression.Color, out var fillColor))
+        {
+            throw new InvalidOperationException($"Line {lineNumber}: invalid color '{expression.Color}'.");
+        }
+
+        var source = ResolveVariable(variables, expression.SourceVariable, lineNumber);
+        var result = source.Clone();
+
+        var x1 = Math.Max(0, expression.TopLeft.X);
+        var y1 = Math.Max(0, expression.TopLeft.Y);
+        var x2 = Math.Min(result.Width, expression.TopLeft.X + expression.RegionSize.Width);
+        var y2 = Math.Min(result.Height, expression.TopLeft.Y + expression.RegionSize.Height);
+
+        if (x2 > x1 && y2 > y1)
+        {
+            var pixel = fillColor.ToPixel<Rgba32>();
+            result.ProcessPixelRows(accessor =>
+            {
+                for (var y = y1; y < y2; y++)
+                {
+                    var row = accessor.GetRowSpan(y);
+                    for (var x = x1; x < x2; x++)
+                    {
+                        row[x] = pixel;
+                    }
+                }
+            });
+        }
+
+        return result;
     }
 
     private static Image<Rgba32> ResolveVariable(IReadOnlyDictionary<string, Image<Rgba32>> variables, string variableName, int lineNumber)
