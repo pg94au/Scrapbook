@@ -40,14 +40,15 @@ internal sealed class ScriptAstBuilder
     private static ScriptCommand BuildAssignment(ParseTreeNode assignmentNode, int lineNumber)
     {
         var variableName = assignmentNode.ChildNodes[0].Token.ValueString;
-        var expressionNode = assignmentNode.ChildNodes[1];
+        var expressionNode = assignmentNode.ChildNodes[^1];
         var expression = BuildExpression(expressionNode.ChildNodes[0], lineNumber);
         return new AssignmentCommand(variableName, expression, lineNumber);
     }
 
     private static ScriptCommand BuildOutput(ParseTreeNode outputNode, int lineNumber)
     {
-        var variableName = outputNode.ChildNodes[1].Token.ValueString;
+        var variableNode = outputNode.ChildNodes[^1];
+        var variableName = variableNode.Token.ValueString;
         return new OutputCommand(variableName, lineNumber);
     }
 

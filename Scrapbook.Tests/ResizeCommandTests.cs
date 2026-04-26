@@ -114,11 +114,14 @@ public class ResizeCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(200, 200);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             first = input 0
             resized = resize first 0,0
             output resized
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("resize dimensions must be positive"));
     }
 
     [Test]
@@ -127,11 +130,14 @@ public class ResizeCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(200, 200);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             first = input 0
             resized = resize first 0,100
             output resized
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("resize dimensions must be positive"));
     }
 
     [Test]
@@ -140,11 +146,14 @@ public class ResizeCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(200, 200);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             first = input 0
             resized = resize first 100,0
             output resized
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("resize dimensions must be positive"));
     }
 
     // Spec 7: Cannot resize to negative dimensions
@@ -154,11 +163,14 @@ public class ResizeCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(200, 200);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             first = input 0
             resized = resize first -100,100
             output resized
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("resize dimensions must be positive"));
     }
 
     [Test]
@@ -167,11 +179,14 @@ public class ResizeCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(200, 200);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             first = input 0
             resized = resize first 100,-100
             output resized
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("resize dimensions must be positive"));
     }
 
     [Test]
@@ -180,11 +195,14 @@ public class ResizeCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(200, 200);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             first = input 0
             resized = resize first -100,-100
             output resized
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("resize dimensions must be positive"));
     }
 
     // Spec 8: Cannot resize referencing an image that does not exist
@@ -193,10 +211,13 @@ public class ResizeCommandTests
     {
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             resized = resize unassigned 100,100
             output resized
             """, []));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("variable 'unassigned' was not defined"));
     }
 
     // Spec 9: Cannot resize with non-integer dimensions
@@ -206,11 +227,14 @@ public class ResizeCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(200, 200);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             first = input 0
             resized = resize first 100.5,100
             output resized
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("invalid integer"));
     }
 
     [Test]
@@ -219,11 +243,14 @@ public class ResizeCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(200, 200);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             first = input 0
             resized = resize first 100,100.5
             output resized
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("invalid integer"));
     }
 
     [Test]
@@ -232,10 +259,12 @@ public class ResizeCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(200, 200);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             first = input 0
             resized = resize first five,six
             output resized
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
     }
 }

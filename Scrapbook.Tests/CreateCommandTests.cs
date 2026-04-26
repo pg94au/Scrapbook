@@ -58,9 +58,10 @@ public class CreateCommandTests
         var parser = new ScrapbookParser();
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
-            invalidImage = create 0,10
+            invalidImage = create 0,10  # Zero width
             """, []));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("dimensions"));
     }
 
@@ -71,9 +72,10 @@ public class CreateCommandTests
         var parser = new ScrapbookParser();
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
-            invalidImage = create 10,0
+            invalidImage = create 10,0  # Zero height
             """, []));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("dimensions"));
     }
 
@@ -84,9 +86,10 @@ public class CreateCommandTests
         var parser = new ScrapbookParser();
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
-            invalidImage = create -5,10
+            invalidImage = create -5,10  # Negative width
             """, []));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("dimensions"));
     }
 
@@ -97,9 +100,10 @@ public class CreateCommandTests
         var parser = new ScrapbookParser();
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
-            invalidImage = create 10,-5
+            invalidImage = create 10,-5  # Negative height
             """, []));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("dimensions"));
     }
 
@@ -109,9 +113,12 @@ public class CreateCommandTests
     {
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
-            invalidImage = create 10.5,20
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+            invalidImage = create 10.5,20  # Non-integer width
             """, []));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("invalid integer"));
     }
 
     // Spec 5: Cannot create with non-integer height (float)
@@ -120,9 +127,12 @@ public class CreateCommandTests
     {
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
-            invalidImage = create 10,20.5
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+            invalidImage = create 10,20.5  # Non-integer height
             """, []));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("invalid integer"));
     }
 
     // Spec 5: Cannot create with non-numeric dimensions
@@ -131,9 +141,11 @@ public class CreateCommandTests
     {
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
-            invalidImage = create a,b
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+            invalidImage = create a,b  # Non-numeric dimensions
             """, []));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
     }
 
     // Spec 6: Create with named color

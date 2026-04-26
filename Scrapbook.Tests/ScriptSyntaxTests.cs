@@ -15,6 +15,6 @@ public class ScriptSyntaxTests
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("a input 0", new[] { input }));
 
-        Assert.That(exception!.Message, Does.Contain("Line"));
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
     }
 }

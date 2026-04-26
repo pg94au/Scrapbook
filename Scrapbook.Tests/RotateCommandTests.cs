@@ -59,6 +59,7 @@ public class RotateCommandTests
             output rotated
             """, new[] { input }));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("variable 'non_existent_image' was not defined"));
     }
 
@@ -74,7 +75,7 @@ public class RotateCommandTests
             output rotated
             """, new[] { input }));
 
-        Assert.That(exception!.Message, Does.Contain("Line"));
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
     }
 
     [Test]

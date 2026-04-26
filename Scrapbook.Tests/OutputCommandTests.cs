@@ -76,9 +76,10 @@ public class OutputCommandTests
         var parser = new ScrapbookParser();
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
-            output first
+            output first  # 'first' has not been assigned to any variable, so this should result in an error.
             """, new[] { input }));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("variable 'first' was not defined"));
     }
 
@@ -90,7 +91,7 @@ public class OutputCommandTests
 
         var outputs = parser.Parse("""
             first = input 0
-            modified = rotate first 90
+            modified = rotate first 90  # Rotate the input image by 90 degrees to create a modified image.
             output modified
             """, new[] { input });
 

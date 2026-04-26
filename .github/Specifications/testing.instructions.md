@@ -40,6 +40,13 @@ When writing tests, organize them when possible on a per-command basis, so that 
 "copy" command are grouped together, all tests related to the "rotate" command are grouped together,
 and so on.  This would include both the positive and negative test cases for each command.
 
+For failure case tests, where an invalid operation is attempted (parameters out of bounds of not
+valid, or unknown command, etc.), assert that an exception of the correct type was thrown, and also
+assert that at least some key word indicating that a reasonable error message was also included in the
+exception.  Exceptions should also reference a line number, and this should be asserted also.  This is
+necessary because it is not helpful for a large script to be executed and for an InvalidOpertionException
+to be thrown with no indication of what the problem was.
+
 Look in the "Use Cases" solution folder for specific scenarios and examples that can be used as the basis
 for test cases.  These use cases provide real-world examples of how users might interact with the library
 and can help to ensure that the tests are relevant and cover important scenarios that users may encounter.

@@ -78,11 +78,14 @@ public class FillCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(10, 10);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             image = input 0
-            invalidImage = fill image 0,0 0,10 red
+            invalidImage = fill image 0,0 0,10 red  # Zero width
             output invalidImage
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("fill dimensions must be positive"));
     }
 
     // Spec 3: Cannot fill area with zero height
@@ -92,11 +95,14 @@ public class FillCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(10, 10);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             image = input 0
-            invalidImage = fill image 0,0 10,0 red
+            invalidImage = fill image 0,0 10,0 red  # Zero height
             output invalidImage
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("fill dimensions must be positive"));
     }
 
     // Spec 4: Cannot fill area with negative width
@@ -106,11 +112,14 @@ public class FillCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(10, 10);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             image = input 0
-            invalidImage = fill image -5,0 10,10 red
+            invalidImage = fill image -5,0 10,10 red  # Negative width
             output invalidImage
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("fill position coordinates must be non-negative"));
     }
 
     // Spec 4: Cannot fill area with negative height
@@ -120,11 +129,14 @@ public class FillCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(10, 10);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             image = input 0
-            invalidImage = fill image 0,-5 10,10 red
+            invalidImage = fill image 0,-5 10,10 red  # Negative height
             output invalidImage
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("fill position coordinates must be non-negative"));
     }
 
     // Spec 5: Cannot fill with non-integer width
@@ -134,11 +146,14 @@ public class FillCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(10, 10);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             image = input 0
-            invalidImage = fill image 0,0 5.5,10 red
+            invalidImage = fill image 0,0 5.5,10 red  # Non-integer width
             output invalidImage
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("invalid integer"));
     }
 
     // Spec 5: Cannot fill with non-integer height
@@ -148,11 +163,13 @@ public class FillCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(10, 10);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             image = input 0
-            invalidImage = fill image 0,0 10,5.5 red
-            output invalidImage
+            invalidImage = fill image 0,0 10,5.5 red  # Non-integer height
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("invalid integer"));
     }
 
     // Spec 5: Cannot fill with non-numeric dimensions
@@ -162,11 +179,13 @@ public class FillCommandTests
         using var input = ScrapbookTestImageFactory.CreatePatternImage(10, 10);
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             image = input 0
-            invalidImage = fill image 0,0 a,b red
+            invalidImage = fill image 0,0 a,b red  # Non-numeric dimensions
             output invalidImage
             """, [input]));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
     }
 
     // Spec 6: Fill area with bounds greater than the input image dimensions
@@ -178,7 +197,7 @@ public class FillCommandTests
 
         var outputs = parser.Parse("""
             image = input 0
-            filledArea = fill image 5,5 10,10 red
+            filledArea = fill image 5,5 10,10 red  # The area defined by the bounding box with top-left corner at (5,5) and width-height of (10,10) extends beyond the bounds of the input image.
             output filledArea
             """, [input]);
 

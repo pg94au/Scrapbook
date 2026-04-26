@@ -7,9 +7,12 @@ internal sealed class ScrapbookGrammar : Grammar
     public ScrapbookGrammar()
     {
         // Core lexical tokens
+        WhitespaceChars = " \t\r";
+
         var identifier = TerminalFactory.CreateCSharpIdentifier("identifier");
         var number = new NumberLiteral("number", NumberOptions.AllowSign);
         var comma = ToTerm(",");
+        var newline = new NewLineTerminal("newline");
 
         // Hex color terminal: matches #RRGGBB (6 hex digits) — must be defined before comment terminal
         var hexColor = new RegexBasedTerminal("hexColor", @"#[0-9A-Fa-f]{6}");
@@ -56,10 +59,12 @@ internal sealed class ScrapbookGrammar : Grammar
         expression.Rule = input | copy | rotate | flip | reverse | create | paste | resize | fill;
 
         // Statement structures
-        assignment.Rule = identifier + ToTerm("=") + expression;
-        output.Rule = ToTerm("output") + identifier;
+        assignment.Rule = identifier + ToTerm("=") + expression
+                        | identifier + ToTerm("-") + expression;
+        output.Rule = ToTerm("output") + identifier
+                    | ToTerm("output") + ToTerm("=") + identifier;
         statement.Rule = assignment | output;
-        program.Rule = MakePlusRule(program, statement);
+        program.Rule = MakePlusRule(program, newline, statement);
 
         // Comment handling — "# " (hash + space) so that #RRGGBB hex colors are not treated as comments
         var scriptComment = new CommentTerminal("scriptComment", "# ", "\n", "\r\n");
@@ -67,6 +72,7 @@ internal sealed class ScrapbookGrammar : Grammar
 
         Root = program;
 
-        MarkPunctuation("=", ",");
+        MarkPunctuation("=", "-", ",", "\n");
+        LanguageFlags = LanguageFlags.NewLineBeforeEOF;
     }
 }

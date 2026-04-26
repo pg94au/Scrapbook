@@ -52,10 +52,11 @@ public class CopyCommandTests
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             source = input 0
-            portion = copy source 90,90 20,20
+            portion = copy source 90,90 20,20  # This bounding box extends beyond the bounds of the input image.
             output portion
             """, new[] { input }));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("copy bounds exceed source image dimensions"));
     }
 
@@ -66,10 +67,11 @@ public class CopyCommandTests
         var parser = new ScrapbookParser();
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
-            portion = copy unassignedImage 10,20 25,25
+            portion = copy unassignedImage 10,20 25,25  # "unassignedImage" has not been assigned a value in the script.
             output portion
             """, new[] { input }));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("variable 'unassignedImage' was not defined"));
     }
 
@@ -81,11 +83,11 @@ public class CopyCommandTests
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             source = input 0
-            portion = copy source
+            portion = copy source # Missing the required arguments for the copy command.
             output portion
             """, new[] { input }));
 
-        Assert.That(exception!.Message, Does.Contain("Line"));
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
     }
 
     [Test]
@@ -96,10 +98,11 @@ public class CopyCommandTests
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             source = input 0
-            portion = copy source 150,150 10,10
+            portion = copy source 150,150 10,10  # The top corner coordinates (150,150) are outside the bounds of the input image.
             output portion
             """, new[] { input }));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("copy bounds exceed source image dimensions"));
     }
 
@@ -111,11 +114,11 @@ public class CopyCommandTests
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             source = input 0
-            portion = copy source ten,twenty 25,25
+            portion = copy source ten,twenty 25,25  # The arguments "ten" and "twenty" are not parsable as integers.
             output portion
             """, new[] { input }));
 
-        Assert.That(exception!.Message, Does.Contain("Line"));
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
     }
 
     [Test]
@@ -126,10 +129,11 @@ public class CopyCommandTests
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             source = input 0
-            portion = copy source 10,20 0,0
+            portion = copy source 10,20 0,0  # The width and height of the bounding box are zero.
             output portion
             """, new[] { input }));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("copy size must be positive"));
     }
 
@@ -144,7 +148,7 @@ public class CopyCommandTests
         var expectedRegion = new Rectangle(10, 20, 25, 25);
 
         var outputs = parser.Parse("""
-            source = input 1
+            source = input 1  # Reference the second input image (index 1).
             portion = copy source 10,20 25,25
             output portion
             """, new[] { firstInput, secondInput });

@@ -57,10 +57,11 @@ public class FlipCommandTests
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             source = input 0
-            flipped = flip source diagonal
+            flipped = flip source diagonal  # "diagonal" is not a valid direction argument for the flip command.
             output flipped
             """, new[] { input }));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("invalid flip direction 'diagonal'"));
     }
 
@@ -71,10 +72,11 @@ public class FlipCommandTests
         var parser = new ScrapbookParser();
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
-            flipped = flip unassignedImage horizontal
+            flipped = flip unassignedImage horizontal  # "unassignedImage" has not been assigned a value in the script.
             output flipped
             """, new[] { input }));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("variable 'unassignedImage' was not defined"));
     }
 
@@ -86,10 +88,10 @@ public class FlipCommandTests
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             source = input 0
-            flipped = flip source
+            flipped = flip source  # Missing the required direction argument for the flip command.
             output flipped
             """, new[] { input }));
 
-        Assert.That(exception!.Message, Does.Contain("Line"));
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
     }
 }

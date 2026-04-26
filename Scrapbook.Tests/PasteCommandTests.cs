@@ -17,7 +17,7 @@ public class PasteCommandTests
 
         var outputs = parser.Parse("""
             first = input 0
-            second = input 1
+            second - input 1
             pasted = paste first second 0,0
             output pasted
             """, [first, second]);
@@ -137,7 +137,7 @@ public class PasteCommandTests
             first = input 0
             second = input 1
             pasted = paste first second 10,10
-            output pasted
+            output = pasted
             """, [first, second]);
 
         Assert.That(outputs, Has.Count.EqualTo(1));
@@ -170,7 +170,7 @@ public class PasteCommandTests
             first = input 0
             second = input 1
             pasted = paste first second -20,-20
-            output pasted
+            output = pasted
             """, [first, second]);
 
         Assert.That(outputs, Has.Count.EqualTo(1));
@@ -191,10 +191,46 @@ public class PasteCommandTests
     {
         var parser = new ScrapbookParser();
 
-        Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             second = create 10,10
             pasted = paste first second 0,0
             output pasted
             """, []));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("variable 'first' was not defined"));
+    }
+
+    // Spec 8: Paste image into a non-existing image.
+    [Test]
+    public void Paste_WhenTargetVariableDoesNotExist_ThrowsInvalidOperationException()
+    {
+        var parser = new ScrapbookParser();
+
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+            first = create 10,10
+            pasted = paste first second 0,0
+            output pasted
+            """, []));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("variable 'second' was not defined"));
+    }
+
+    // Spec 9: Paste image into invalid coordinates of another image.
+    [Test]
+    public void Paste_WhenCoordinatesAreInvalid_ThrowsInvalidOperationException()
+    {
+        var parser = new ScrapbookParser();
+
+        var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
+            first = create 10,10
+            second = create 10,10
+            pasted = paste first second hello
+            output pasted
+            """, []));
+
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
+        Assert.That(exception!.Message, Does.Contain("Syntax error"));
     }
 }

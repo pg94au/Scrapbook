@@ -55,10 +55,11 @@ public class InputCommandTests
         var parser = new ScrapbookParser();
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
-            missing = input 1
+            missing = input 1  # There is only one input image at index 0, so index 1 does not exist.
             output missing
             """, new[] { input }));
 
+        Assert.That(exception!.Message, Does.Match(@"Line \d+"));
         Assert.That(exception!.Message, Does.Contain("input index 1 is out of range"));
     }
 }
