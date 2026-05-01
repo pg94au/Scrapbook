@@ -23,6 +23,7 @@
 		<File Path=".github/workflows/ci.yml" />
 		<File Path=".github/workflows/publish.yml" />
 	</Folder>
+	<Project Path="Scrapbook.App/Scrapbook.App.csproj" />
 	<Project Path="Scrapbook.Tests/Scrapbook.Tests.csproj" />
 	<Project Path="Scrapbook/Scrapbook.csproj" />
 </Solution>
