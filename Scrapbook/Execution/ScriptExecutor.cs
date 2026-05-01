@@ -206,7 +206,10 @@ internal sealed class ScriptExecutor
 
         if (expression.Color is not null)
         {
-            if (!Color.TryParse(expression.Color, out backgroundColor))
+            var colorString = expression.Color.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
+                ? "#" + expression.Color[2..]
+                : expression.Color;
+            if (!Color.TryParse(colorString, out backgroundColor))
             {
                 throw new InvalidOperationException($"Line {lineNumber}: invalid color '{expression.Color}'.");
             }
@@ -240,7 +243,10 @@ internal sealed class ScriptExecutor
             throw new InvalidOperationException($"Line {lineNumber}: fill dimensions must be positive.");
         }
 
-        if (!Color.TryParse(expression.Color, out var fillColor))
+        var colorString = expression.Color.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
+            ? "#" + expression.Color[2..]
+            : expression.Color;
+        if (!Color.TryParse(colorString, out var fillColor))
         {
             throw new InvalidOperationException($"Line {lineNumber}: invalid color '{expression.Color}'.");
         }

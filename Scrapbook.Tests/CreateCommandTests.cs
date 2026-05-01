@@ -182,7 +182,7 @@ public class CreateCommandTests
         var parser = new ScrapbookParser();
 
         var outputs = parser.Parse("""
-            coloredImage = create 10,20 #FF0000
+            coloredImage = create 10,20 0xFF0000
             output coloredImage
             """, []);
 

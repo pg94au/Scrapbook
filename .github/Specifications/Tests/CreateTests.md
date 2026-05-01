@@ -89,7 +89,7 @@ output coloredImage
 ```
 
 ```
-coloredImage = create 10,20 #FF0000
+coloredImage = create 10,20 0xFF0000
 output coloredImage
 ```
 

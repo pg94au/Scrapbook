@@ -17,11 +17,13 @@
 		<File Path=".github/Specifications/Tests/ResizeTests.md" />
 		<File Path=".github/Specifications/Tests/ReverseTests.md" />
 		<File Path=".github/Specifications/Tests/RotateTests.md" />
+		<File Path=".github/Specifications/Tests/SyntaxTests.md" />
 	</Folder>
 	<Folder Name="/Solution Items/Specifications/Use Cases/GitHub Workflows/">
 		<File Path=".github/workflows/ci.yml" />
 		<File Path=".github/workflows/publish.yml" />
 	</Folder>
+	<Project Path="Scrapbook.App/Scrapbook.App.csproj" Id="e807c875-185b-4f97-a2b7-8510da657d4e" />
 	<Project Path="Scrapbook.Tests/Scrapbook.Tests.csproj" />
 	<Project Path="Scrapbook/Scrapbook.csproj" />
 </Solution>

@@ -97,7 +97,7 @@ public class FillCommandTests
 
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             image = input 0
-            invalidImage = fill image 0,0 10,0 red  # Zero height
+            invalidImage = fill image 0,0 10,0 0xFF0000  # Zero height
             output invalidImage
             """, [input]));
 
@@ -166,6 +166,7 @@ public class FillCommandTests
         var exception = Assert.Throws<InvalidOperationException>(() => parser.Parse("""
             image = input 0
             invalidImage = fill image 0,0 10,5.5 red  # Non-integer height
+            output invalidImage
             """, [input]));
 
         Assert.That(exception!.Message, Does.Match(@"Line \d+"));

@@ -39,7 +39,7 @@ output invalidImage
 
 ```
 image = input 0
-invalidImage = fill image 0,0 10,0 red  # Zero height
+invalidImage = fill image 0,0 10,0 0xFF0000  # Zero height
 output invalidImage
 ```
 

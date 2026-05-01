@@ -14,8 +14,8 @@ internal sealed class ScrapbookGrammar : Grammar
         var comma = ToTerm(",");
         var newline = new NewLineTerminal("newline");
 
-        // Hex color terminal: matches #RRGGBB (6 hex digits) — must be defined before comment terminal
-        var hexColor = new RegexBasedTerminal("hexColor", @"#[0-9A-Fa-f]{6}");
+        // Hex color terminal: matches 0xRRGGBB (6 hex digits)
+        var hexColor = new RegexBasedTerminal("hexColor", @"0x[0-9A-Fa-f]{6}");
 
         // Grammar nodes
         var program = new NonTerminal("program");
@@ -66,8 +66,8 @@ internal sealed class ScrapbookGrammar : Grammar
         statement.Rule = assignment | output;
         program.Rule = MakePlusRule(program, newline, statement);
 
-        // Comment handling — "# " (hash + space) so that #RRGGBB hex colors are not treated as comments
-        var scriptComment = new CommentTerminal("scriptComment", "# ", "\n", "\r\n");
+        // Comment handling — lines/inline text starting with "#"
+        var scriptComment = new CommentTerminal("scriptComment", "#", "\n", "\r\n");
         NonGrammarTerminals.Add(scriptComment);
 
         Root = program;
